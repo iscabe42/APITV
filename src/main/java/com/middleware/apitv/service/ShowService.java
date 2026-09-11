@@ -8,16 +8,20 @@ import org.springframework.web.client.RestClient;
 
 import com.middleware.apitv.dto.ShowInfo;
 import com.middleware.apitv.dto.TVMazeResponse;
+import com.middleware.apitv.repository.ShowRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ShowService {
 
 	private final RestClient restClient;
+	private final ShowRepository showRepository;
 
-    public ShowService() {
+    public ShowService(ShowRepository showRepository) {
+    	this.showRepository = showRepository;
         this.restClient = RestClient.builder()
                 .baseUrl("https://api.tvmaze.com")
                 .defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE)
@@ -60,19 +64,32 @@ public class ShowService {
             return null;
         }
 
+        Optional<ShowInfo> localShow = showRepository.findById(id);
+        if (localShow.isPresent()) {
+            System.out.println("Show encontrado en MongoDB. Retornando...");
+            return localShow.get();
+        }
+        
         try {
-            return restClient.get()
+        	ShowInfo externalShow = restClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/shows/{show_id}")
-                            .build(id)) // Reemplaza {show_id} con el parámetro 'id'
+                            .build(id))
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, (request, response) -> {
                         String errorHtml = new String(response.getBody().readAllBytes());
                         System.err.println("Error buscando show ID " + id + ": " + response.getStatusCode());
                         throw new RuntimeException("No se pudo obtener el show de TVMaze");
                     })
-                    .body(ShowInfo.class); // Mapea directamente al DTO del show completo
+                    .body(ShowInfo.class);
 
+        	if (externalShow != null) {
+                showRepository.save(externalShow);
+                System.out.println("Show guardado exitosamente en MongoDB Atlas.");
+            }
+        	
+        	return externalShow;
+        	
         } catch (Exception e) {
             System.err.println("Error en el Middleware al buscar por ID: " + e.getMessage());
             return null;
