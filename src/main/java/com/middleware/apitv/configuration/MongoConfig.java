@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
+import org.springframework.data.mongodb.core.convert.MongoTypeMapper;
 
 @Configuration
 public class MongoConfig {
@@ -35,6 +37,11 @@ public class MongoConfig {
         SimpleMongoClientDatabaseFactory factory = new SimpleMongoClientDatabaseFactory(mongoClient, database);
         
         return new MongoTemplate(factory);
+    }
+    
+    @Bean
+    public MongoTypeMapper customTypeMapper() {
+        return new DefaultMongoTypeMapper(null);
     }
 }
 

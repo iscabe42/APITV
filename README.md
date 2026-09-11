@@ -14,3 +14,13 @@ Realiza una petición GET enviando el ID del show en la URL:http://localhost:808
 
 # B- Endpoint show
 se actualizo para que consulte en mongo db si ya existe el show que se busca
+
+# C- Endpoint comments:
+Envia una petición POST mediante Postman o tu cliente HTTP de preferencia:URL: http://localhost:8080/api/v1/shows/analisis
+
+Cuerpo de la peticion
+{
+  "show_id": 139,
+  "comment": "Una excelente serie de comedia y drama de HBO.",
+  "rating": 5
+}

@@ -6,8 +6,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import com.middleware.apitv.dto.AnalisisRequestDTO;
+import com.middleware.apitv.dto.AnalisisShow;
 import com.middleware.apitv.dto.ShowInfo;
 import com.middleware.apitv.dto.TVMazeResponse;
+import com.middleware.apitv.repository.AnalisisShowRepository;
 import com.middleware.apitv.repository.ShowRepository;
 
 import java.util.Collections;
@@ -19,8 +22,10 @@ public class ShowService {
 
 	private final RestClient restClient;
 	private final ShowRepository showRepository;
+	private final AnalisisShowRepository analisisShowRepository;
 
-    public ShowService(ShowRepository showRepository) {
+    public ShowService(ShowRepository showRepository, AnalisisShowRepository analisisShowRepository) {
+    	this.analisisShowRepository = analisisShowRepository;
     	this.showRepository = showRepository;
         this.restClient = RestClient.builder()
                 .baseUrl("https://api.tvmaze.com")
@@ -95,4 +100,25 @@ public class ShowService {
             return null;
         }
     }
+    
+    public void guardarAnalisis(AnalisisRequestDTO request) {
+        if (request.rating() < 0 || request.rating() > 5) {
+            throw new IllegalArgumentException("La calificación debe estar entre 0 y 5.");
+        }
+
+        ShowInfo show = this.getShowById(request.show_id());
+        if (show == null) {
+            throw new RuntimeException("No se puede guardar el análisis. El show con ID " + request.show_id() + " no existe.");
+        }
+
+        AnalisisShow analisis = new AnalisisShow(
+                request.show_id(),
+                request.comment(),
+                request.rating()
+        );
+
+        analisisShowRepository.save(analisis);
+        System.out.println("Análisis guardado con éxito en MongoDB para el show ID: " + request.show_id());
+    }
+    
 }
