@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import com.middleware.apitv.dto.ShowInfo;
 import com.middleware.apitv.dto.TVMazeResponse;
 
 import java.util.Collections;
@@ -51,6 +52,30 @@ public class ShowService {
         } catch (Exception e) {
             System.err.println("Error controlado en el Middleware: " + e.getMessage());
             return Collections.emptyList();
+        }
+    }
+    
+    public ShowInfo getShowById(Long id) {
+        if (id == null) {
+            return null;
+        }
+
+        try {
+            return restClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/shows/{show_id}")
+                            .build(id)) // Reemplaza {show_id} con el parámetro 'id'
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, (request, response) -> {
+                        String errorHtml = new String(response.getBody().readAllBytes());
+                        System.err.println("Error buscando show ID " + id + ": " + response.getStatusCode());
+                        throw new RuntimeException("No se pudo obtener el show de TVMaze");
+                    })
+                    .body(ShowInfo.class); // Mapea directamente al DTO del show completo
+
+        } catch (Exception e) {
+            System.err.println("Error en el Middleware al buscar por ID: " + e.getMessage());
+            return null;
         }
     }
 }
