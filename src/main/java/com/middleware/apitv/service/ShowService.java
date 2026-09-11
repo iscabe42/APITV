@@ -1,5 +1,6 @@
 package com.middleware.apitv.service;
 import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.web.client.RestClient;
 import com.middleware.apitv.dto.AnalisisRequestDTO;
 import com.middleware.apitv.dto.AnalisisShow;
 import com.middleware.apitv.dto.CommentDTO;
+import com.middleware.apitv.dto.ShowDetailResponseDTO;
 import com.middleware.apitv.dto.ShowInfo;
 import com.middleware.apitv.dto.ShowResponseDTO;
 import com.middleware.apitv.dto.TVMazeResponse;
@@ -26,12 +28,13 @@ public class ShowService {
 	private final RestClient restClient;
 	private final ShowRepository showRepository;
 	private final AnalisisShowRepository analisisShowRepository;
-
-    public ShowService(ShowRepository showRepository, AnalisisShowRepository analisisShowRepository) {
+	
+    public ShowService(ShowRepository showRepository, AnalisisShowRepository analisisShowRepository,
+    		@Value("${api.shows}") String apiExternaShows) {
     	this.analisisShowRepository = analisisShowRepository;
     	this.showRepository = showRepository;
         this.restClient = RestClient.builder()
-                .baseUrl("https://api.tvmaze.com")
+                .baseUrl(apiExternaShows)
                 .defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                 .build();
@@ -88,41 +91,63 @@ public class ShowService {
         }
     }
     
-    public ShowInfo getShowById(Long id) {
+    public ShowDetailResponseDTO getShowById(Long id) {
         if (id == null) {
             return null;
         }
 
+        ShowInfo showBase = null;
+
         Optional<ShowInfo> localShow = showRepository.findById(id);
         if (localShow.isPresent()) {
-            System.out.println("Show encontrado en MongoDB. Retornando...");
-            return localShow.get();
-        }
-        
-        try {
-        	ShowInfo externalShow = restClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/shows/{show_id}")
-                            .build(id))
-                    .retrieve()
-                    .onStatus(HttpStatusCode::isError, (request, response) -> {
-                        String errorHtml = new String(response.getBody().readAllBytes());
-                        System.err.println("Error buscando show ID " + id + ": " + response.getStatusCode());
-                        throw new RuntimeException("No se pudo obtener el show de TVMaze");
-                    })
-                    .body(ShowInfo.class);
+            System.out.println("Show encontrado en MongoDB (Local).");
+            showBase = localShow.get();
+        } else {
+            System.out.println("Show no encontrado en Mongo. Consultando API externa de TVMaze para ID: " + id);
+            try {
+                ShowInfo externalShow = restClient.get()
+                        .uri(uriBuilder -> uriBuilder.path("/shows/{show_id}").build(id))
+                        .retrieve()
+                        .onStatus(HttpStatusCode::isError, (request, response) -> {
+                            throw new RuntimeException("TVMaze rechazó la solicitud con código: " + response.getStatusCode());
+                        })
+                        .body(ShowInfo.class);
 
-        	if (externalShow != null) {
-                showRepository.save(externalShow);
-                System.out.println("Show guardado exitosamente en MongoDB Atlas.");
+                if (externalShow != null) {
+                    showRepository.save(externalShow);
+                    System.out.println("Show guardado exitosamente en MongoDB Atlas.");
+                    showBase = externalShow;
+                }
+            } catch (Exception e) {
+                System.err.println("Error controlado en el flujo por ID del Middleware: " + e.getMessage());
+                return null;
             }
-        	
-        	return externalShow;
-        	
-        } catch (Exception e) {
-            System.err.println("Error en el Middleware al buscar por ID: " + e.getMessage());
+        }
+
+        if (showBase == null) {
             return null;
         }
+
+        String channelName = null;
+        if (showBase.network() != null) {
+            channelName = showBase.network().name();
+        } else if (showBase.webChannel() != null) {
+            channelName = showBase.webChannel().name();
+        }
+
+        List<CommentDTO> dbComments = analisisShowRepository.findByShowId(id)
+                .stream()
+                .map(analisis -> new CommentDTO(analisis.getComment(), analisis.getRating()))
+                .collect(Collectors.toList());
+
+        return new ShowDetailResponseDTO(
+                showBase.id(),
+                showBase.name(),
+                channelName,
+                showBase.summary(),
+                showBase.genres(),
+                dbComments
+        );
     }
     
     public void guardarAnalisis(AnalisisRequestDTO request) {
@@ -130,7 +155,7 @@ public class ShowService {
             throw new IllegalArgumentException("La calificación debe estar entre 0 y 5.");
         }
 
-        ShowInfo show = this.getShowById(request.show_id());
+         ShowDetailResponseDTO show = this.getShowById(request.show_id());
         if (show == null) {
             throw new RuntimeException("No se puede guardar el análisis. El show con ID " + request.show_id() + " no existe.");
         }

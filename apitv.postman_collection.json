@@ -1,0 +1,193 @@
+{
+  "info": {
+    "_postman_id": "aedc2ca6-091d-4551-887e-3aef1d7b4ce2",
+    "name": "apitv",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "4234353"
+  },
+  "item": [
+    {
+      "name": "obtener lista de show",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/shows?search_query=girls",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "shows"
+          ],
+          "query": [
+            {
+              "key": "search_query",
+              "value": "girls"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "obtener lista de show",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/shows?search_query=girls",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "shows"
+              ],
+              "query": [
+                {
+                  "key": "search_query",
+                  "value": "girls"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Fri, 11 Sep 2026 15:34:33 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"score\": 0.8918413,\n        \"show\": {\n            \"id\": 139,\n            \"name\": \"Girls\",\n            \"network\": {\n                \"name\": \"HBO\"\n            },\n            \"webChannel\": null,\n            \"summary\": \"<p>This Emmy winning series is a comic look at the assorted humiliations and rare triumphs of a group of girls in their 20s.</p>\",\n            \"genres\": [\n                \"Drama\",\n                \"Romance\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.87561506,\n        \"show\": {\n            \"id\": 41734,\n            \"name\": \"GIRLS\",\n            \"network\": {\n                \"name\": \"UBS\"\n            },\n            \"webChannel\": null,\n            \"summary\": null,\n            \"genres\": [\n                \"Comedy\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.685307,\n        \"show\": {\n            \"id\": 525,\n            \"name\": \"Gilmore Girls\",\n            \"network\": {\n                \"name\": \"The CW\"\n            },\n            \"webChannel\": null,\n            \"summary\": \"<p><b>Gilmore Girls</b> is a drama centering around the relationship between a thirtysomething single mother and her teen daughter living in Stars Hollow, Connecticut.</p>\",\n            \"genres\": [\n                \"Drama\",\n                \"Comedy\",\n                \"Romance\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.6851173,\n        \"show\": {\n            \"id\": 33320,\n            \"name\": \"Derry Girls\",\n            \"network\": {\n                \"name\": \"Channel 4\"\n            },\n            \"webChannel\": null,\n            \"summary\": \"<p>16-year-old Erin Quinn lives with her uncompromising mother, her long-suffering father and the fearsome ‘Granda Joe', a man whose love for his daughters and granddaughters is surpassed only by his contempt for his son-in-law.</p><p>It's the early 90s, and Erin is used to seeing her country on the nightly news and speaking in acronyms (The IRA, The UDA, The RUC). This is a time of armed police in armoured Land Rovers and British Army check points. But it's also the time of Murder She Wrote, The Cranberries, MJ and Lisa Marie, Doc Martens, bomber jackets, The X Files, Nirvana and Wayne's World. And while The Troubles may hang over her home town, Erin has troubles of her own</p>\",\n            \"genres\": [\n                \"Comedy\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.68434715,\n        \"show\": {\n            \"id\": 42986,\n            \"name\": \"Paper Girls\",\n            \"network\": null,\n            \"webChannel\": {\n                \"name\": \"Prime Video\"\n            },\n            \"summary\": \"<p><b>Paper Girls </b>follows four young girls who, while out delivering papers on the morning after Halloween in 1988, become unwittingly caught in a conflict between warring factions of time-travelers, sending them on an adventure through time that will save the world. As they travel between our present, the past, and the future — they encounter future versions of themselves and now must choose to embrace or reject their fate. An emotional adventure in which the girls and the women they eventually become are tough, their friendships are authentic, and their journey through time is epic.</p>\",\n            \"genres\": [\n                \"Drama\",\n                \"Science-Fiction\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.68424964,\n        \"show\": {\n            \"id\": 23542,\n            \"name\": \"Good Girls\",\n            \"network\": {\n                \"name\": \"NBC\"\n            },\n            \"webChannel\": null,\n            \"summary\": \"<p><b>Good Girls</b> follows three \\\"good girl\\\" suburban wives and mothers who suddenly find themselves in desperate circumstances and decide to stop playing it safe, and risk everything to take their power back.</p>\",\n            \"genres\": [\n                \"Drama\",\n                \"Comedy\",\n                \"Crime\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.6826484,\n        \"show\": {\n            \"id\": 1073,\n            \"name\": \"Bomb Girls\",\n            \"network\": {\n                \"name\": \"Global\"\n            },\n            \"webChannel\": null,\n            \"summary\": \"<p>Set in the 1940s, <b>Bomb Girls</b> tells the remarkable stories of the women who risked their lives in a munitions factory building bombs for the Allied forces fighting on the European front. The series delves into the lives of these exceptional women – peers, friends and rivals – who find themselves thrust into new worlds and changed profoundly as they are liberated from their home and social restrictions.</p>\",\n            \"genres\": [\n                \"Drama\",\n                \"Romance\",\n                \"War\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.6824428,\n        \"show\": {\n            \"id\": 27894,\n            \"name\": \"Three Girls\",\n            \"network\": {\n                \"name\": \"BBC One\"\n            },\n            \"webChannel\": null,\n            \"summary\": \"<p><b>Three Girls</b> tells the true story of three of the children who were victims in the 2012 grooming and sex trafficking case in Rochdale.</p><p>Holly is new to Rochdale and keen to make friends and fit in. She finds herself drawn into a world she cannot escape, despite her pleas for help. It's a world that is all too familiar to sexual health worker Sara, who has been recording and reporting cases of child abuse for years.</p>\",\n            \"genres\": [\n                \"Drama\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.68107474,\n        \"show\": {\n            \"id\": 67594,\n            \"name\": \"Dope Girls\",\n            \"network\": null,\n            \"webChannel\": {\n                \"name\": \"BBC iPlayer\"\n            },\n            \"summary\": \"<p>As WWI ends, housewife Kate Galloway sets up a nightclub in Soho to support her daughters. But Kate must contend with a dangerous gangster family and the police to survive.</p>\",\n            \"genres\": [\n                \"Drama\",\n                \"Crime\",\n                \"History\"\n            ]\n        }\n    },\n    {\n        \"score\": 0.6809672,\n        \"show\": {\n            \"id\": 1308,\n            \"name\": \"Bad Girls\",\n            \"network\": {\n                \"name\": \"ITV1\"\n            },\n            \"webChannel\": null,\n            \"summary\": \"<p>Step inside HMP Larkhall and meet the women of G-Wing, who've committed various offences that range from shoplifting to murder. <b>Bad Girls</b> shows what life is like for these women in the 'inside world' and also shows the real-life problems (and maybe behaviour!) of the officers who watch them!</p>\",\n            \"genres\": [\n                \"Drama\",\n                \"Crime\",\n                \"Romance\"\n            ]\n        }\n    }\n]"
+        }
+      ]
+    },
+    {
+      "name": "obtener un show",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/shows/525",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "shows",
+            "525"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "obtener un show",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/shows/1073",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "shows",
+                "1073"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Date",
+              "value": "Fri, 11 Sep 2026 15:35:04 GMT"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"id\": 1073,\n    \"name\": \"Bomb Girls\",\n    \"network\": {\n        \"name\": \"Global\"\n    },\n    \"webChannel\": null,\n    \"summary\": \"<p>Set in the 1940s, <b>Bomb Girls</b> tells the remarkable stories of the women who risked their lives in a munitions factory building bombs for the Allied forces fighting on the European front. The series delves into the lives of these exceptional women – peers, friends and rivals – who find themselves thrust into new worlds and changed profoundly as they are liberated from their home and social restrictions.</p>\",\n    \"genres\": [\n        \"Drama\",\n        \"Romance\",\n        \"War\"\n    ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "guarda analisis de show",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"show_id\": 525,\r\n  \"comment\": \"001 Una excelente serie de drama de HBO.\",\r\n  \"rating\": 3\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/shows/analisis",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "shows",
+            "analisis"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

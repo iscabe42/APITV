@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.middleware.apitv.dto.AnalisisRequestDTO;
+import com.middleware.apitv.dto.ShowDetailResponseDTO;
 import com.middleware.apitv.dto.ShowInfo;
 import com.middleware.apitv.dto.ShowResponseDTO;
 import com.middleware.apitv.dto.TVMazeResponse;
@@ -39,8 +40,8 @@ public class ShowController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<@Nullable ShowInfo> getShowById(@PathVariable(name = "id") Long id) {
-        @Nullable ShowInfo show = showService.getShowById(id);
+    public ResponseEntity<@Nullable ShowDetailResponseDTO> getShowById(@PathVariable(name = "id") Long id) {
+        @Nullable ShowDetailResponseDTO show = showService.getShowById(id);
         return ResponseEntity.ok(show);
     }
     
