@@ -8,7 +8,9 @@ import org.springframework.web.client.RestClient;
 
 import com.middleware.apitv.dto.AnalisisRequestDTO;
 import com.middleware.apitv.dto.AnalisisShow;
+import com.middleware.apitv.dto.CommentDTO;
 import com.middleware.apitv.dto.ShowInfo;
+import com.middleware.apitv.dto.ShowResponseDTO;
 import com.middleware.apitv.dto.TVMazeResponse;
 import com.middleware.apitv.repository.AnalisisShowRepository;
 import com.middleware.apitv.repository.ShowRepository;
@@ -16,6 +18,7 @@ import com.middleware.apitv.repository.ShowRepository;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ShowService {
@@ -34,32 +37,53 @@ public class ShowService {
                 .build();
     }
 
-    public @Nullable List<TVMazeResponse> searchShows(String searchQuery) {
+    public List<ShowResponseDTO> searchShows(String searchQuery) {
         if (searchQuery == null || searchQuery.isBlank()) {
             return Collections.emptyList();
         }
 
         try {
-            return restClient.get()
+            List<TVMazeResponse> externalData = restClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/search/shows")
                             .queryParam("q", searchQuery)
                             .build())
                     .retrieve()
-                    // Si el servidor responde con errores 4xx o 5xx, capturamos el cuerpo crudo (HTML)
-                    .onStatus(HttpStatusCode::isError, (request, response) -> {
-                        String errorHtml = new String(response.getBody().readAllBytes());
-                        System.err.println("------ ERROR DE LA API EXTERNA ------");
-                        System.err.println("Código de Estado: " + response.getStatusCode());
-                        System.err.println("Respuesta del Servidor (HTML): \n" + errorHtml);
-                        System.err.println("-------------------------------------");
-                        throw new RuntimeException("TVMaze respondió con un error y formato no soportado.");
-                    })
-                    // Si todo sale bien (200 OK), procedemos con el parseo seguro
                     .body(new ParameterizedTypeReference<List<TVMazeResponse>>() {});
 
+            if (externalData == null) {
+                return Collections.emptyList();
+            }
+
+            return externalData.stream()
+                    .map(TVMazeResponse::show)
+                    .map(show -> {
+                        String channelName = null;
+                        if (show.network() != null) {
+                            channelName = show.network().name();
+                        } else if (show.webChannel() != null) {
+                            channelName = show.webChannel().name();
+                        }
+
+                        List<CommentDTO> dbComments = analisisShowRepository.findByShowId(show.id())
+                                .stream()
+                                .map(analisis -> new CommentDTO(analisis.getComment(), analisis.getRating()))
+                                .collect(Collectors.toList());
+
+                        
+                        return new ShowResponseDTO(
+                                show.id(),
+                                show.name(),
+                                channelName,
+                                show.summary(),
+                                show.genres(),
+                                dbComments 
+                        );
+                    })
+                    .collect(Collectors.toList());
+
         } catch (Exception e) {
-            System.err.println("Error controlado en el Middleware: " + e.getMessage());
+            System.err.println("Error al buscar shows y comentarios: " + e.getMessage());
             return Collections.emptyList();
         }
     }

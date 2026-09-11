@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.middleware.apitv.dto.AnalisisRequestDTO;
 import com.middleware.apitv.dto.ShowInfo;
+import com.middleware.apitv.dto.ShowResponseDTO;
 import com.middleware.apitv.dto.TVMazeResponse;
 import com.middleware.apitv.service.ShowService;
 
@@ -29,11 +30,11 @@ public class ShowController {
     }
 
     @GetMapping
-    public ResponseEntity<@Nullable List<TVMazeResponse>> getShows(
+    public ResponseEntity<@Nullable List<ShowResponseDTO>> getShows(
             @RequestParam(name = "search_query") String searchQuery) {
         
         @Nullable
-		List<TVMazeResponse> results = showService.searchShows(searchQuery);
+		List<ShowResponseDTO> results = showService.searchShows(searchQuery);
         return ResponseEntity.ok(results);
     }
     
